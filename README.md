@@ -1,4 +1,6 @@
-__# Python-Fundamentals-for-Data-Science-S2-20_DSECLPFDS__
+#
+
+__Python-Fundamentals-for-Data-Science-S2-20_DSECLPFDS__
 Introduction to Python for DataScience - Prof. Partha Sarathy P D
 
 Being a Data Science course, we are using the Anaconda Framework predominantly.
@@ -15,5 +17,10 @@ Being a Data Science course, we are using the Anaconda Framework predominantly.
 * `conda update anaconda=4.6.1` : update anaconda version
 * `conda update -n myenv --all` : update all packages in current env
 * `conda list` : list all packages installed
-* __WINDOWS NOTE: SOURCE is not recognized.__ When deactivating and activating in the anaconda command prompt, skip `source` and just type `deactivate` or `activate` depending on what you are trying to do. 
+* __WINDOWS NOTE: SOURCE is not recognized.__ When deactivating and activating in the anaconda command prompt, skip `source` and just type `deactivate` or `activate` depending on what you are trying to do.
 * `conda env remove -n ENV_NAME` : delete environment
+
+__Packages covered:__
+
+1. Numpy
+2. Pandas

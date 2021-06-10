@@ -1,9 +1,6 @@
 #
 
-__Python-Fundamentals-for-Data-Science-S2-20_DSECLPFDS__
-Introduction to Python for DataScience - Prof. Partha Sarathy P D
-
-Being a Data Science course, we are using the Anaconda Framework predominantly.
+__Python-for-Data-Science__
 
 * `conda info --envs` : lists all environments
 * `source activate <env name>`: activate an environment

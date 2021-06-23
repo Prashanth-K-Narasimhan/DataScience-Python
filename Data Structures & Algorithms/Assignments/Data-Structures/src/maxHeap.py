@@ -1,4 +1,3 @@
-
 class MaxHeap:
 
     def __init__(self, capacity=50):
@@ -122,74 +121,12 @@ class MaxHeap:
                 arr.append(self.dequeue())
         return arr
 
-def best_rate(n, item_costs, delivery_costs):
+if __name__ == '__main__':
+    test_heap = MaxHeap(7)
+    test_heap.build_heap([2, 9, 7, 6, 5, 8])
+    # insert = test_heap.enqueue(10)
+    # print(insert)
+    # insert = test_heap.enqueue(10)
+    # print(insert)
+    print(test_heap.n_list(4))
 
-    input_values_tuples = list(zip(list(item_costs), list(delivery_costs)))
-
-    # print(input_values_tuples)
-
-    # d_costs = sorted(set(delivery_costs), reverse=True)
-    sorted_delivery_heap = MaxHeap(len(delivery_costs));
-    sorted_delivery_heap.build_heap(delivery_costs);
-    d_costs = sorted_delivery_heap.contents()
-
-    maxHeap = MaxHeap()
-    lister = []
-    # print(d_costs)
-
-    for d_cost in d_costs:
-        # print(d_cost)
-        max_queue = MaxHeap()
-        for i_cost in input_values_tuples:
-            if i_cost[1] >= d_cost:
-                total = i_cost[0] + d_cost
-                # print(f'{i_cost} ==> {total}')
-                max_queue.enqueue(total)
-        if max_queue.get_size() >= n:
-            list_out = max_queue.n_list(n)
-            my_list = [(i - d_cost, d_cost) for i in list_out]
-            summation = sum(list_out)
-            lister.append([summation , my_list])
-            maxHeap.enqueue(summation)
-            # print(f'{my_list} : {sum(list_out)}')
-
-    highest_price = maxHeap.peek()
-    return ([i[1] for i in lister if i[0] == highest_price][0], highest_price)
-
-# Driver Code
-if __name__ == "__main__":
-
-    input_file = open('inputPS9.txt')
-    num_tests = int(input_file.readline().rstrip())
-    test_inputs = [i.rstrip() for i in input_file.readlines()]
-    # print(test_inputs[:])
-    input_file.close()
-
-    test_no = 0
-    output_list = []
-# The if condition at the end is to limit the number of tests to the number specified uptop.
-    chunks = [test_inputs[x:x+3] for x in range(0, len(test_inputs), 3) if x < num_tests*3]
-
-    # warning message in-case the test number is greater than the inputs.
-    if num_tests > len(chunks):
-        print(f"\x1b[2;31m[WARN] The number of tests [{num_tests}] specified was greater than the inputs [{len(chunks)}] present.\x1b[0;0m")
-
-    for n in chunks:
-        n1 = [int(x) for x in n[0].split()]
-        item_costs = [int(x) for x in n[1].split()]
-        delivery_costs = [int(x) for x in n[2].split()]
-
-        test_no += 1
-
-        if(len(item_costs) == len(item_costs) == n1[0]):
-            output = best_rate(n1[1], item_costs, delivery_costs)
-            # print(f"Test Number {test_no} : {output[0]} ==> {output[1]}")
-            output_list.append(f"Test Number {test_no} : {output[0]} ==> {output[1]}")
-        else:
-            raise Exception(f"{n}: elements don't match the number specified")
-
-    file = 'outputPS9.txt'
-    with open(file, 'w') as out_file:
-        out = out_file.write('\n'.join(output_list))
-        if out > 0:
-            print("[outputPS9.txt] written.")

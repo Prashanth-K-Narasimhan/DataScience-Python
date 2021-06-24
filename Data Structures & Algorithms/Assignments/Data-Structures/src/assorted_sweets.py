@@ -124,14 +124,16 @@ class MaxHeap:
 
 def best_rate(n, item_costs, delivery_costs):
 
+    # we are utilizing zip to form tuples of the lists, else we have to use (item_costs[i], delivery_costs[i])
+    # using zip improves the code readability, nothing more.
     input_values_tuples = list(zip(list(item_costs), list(delivery_costs)))
 
     # print(input_values_tuples)
 
-    # d_costs = sorted(set(delivery_costs), reverse=True)
-    sorted_delivery_heap = MaxHeap(len(delivery_costs));
-    sorted_delivery_heap.build_heap(delivery_costs);
-    d_costs = sorted_delivery_heap.contents()
+    d_costs = sorted(set(delivery_costs), reverse=True)
+    # sorted_delivery_heap = MaxHeap(len(delivery_costs));
+    # sorted_delivery_heap.build_heap(delivery_costs);
+    # d_costs = sorted_delivery_heap.contents()
 
     maxHeap = MaxHeap()
     lister = []
@@ -139,7 +141,7 @@ def best_rate(n, item_costs, delivery_costs):
 
     for d_cost in d_costs:
         # print(d_cost)
-        max_queue = MaxHeap()
+        max_queue = MaxHeap(len(input_values_tuples))
         for i_cost in input_values_tuples:
             if i_cost[1] >= d_cost:
                 total = i_cost[0] + d_cost
@@ -150,8 +152,10 @@ def best_rate(n, item_costs, delivery_costs):
             my_list = [(i - d_cost, d_cost) for i in list_out]
             summation = sum(list_out)
             lister.append([summation , my_list])
-            maxHeap.enqueue(summation)
+            maxHeap.enqueue(summation)  #
             # print(f'{my_list} : {sum(list_out)}')
+
+    print(lister)
 
     highest_price = maxHeap.peek()
     return ([i[1] for i in lister if i[0] == highest_price][0], highest_price)
@@ -167,7 +171,7 @@ if __name__ == "__main__":
 
     test_no = 0
     output_list = []
-# The if condition at the end is to limit the number of tests to the number specified uptop.
+# The if condition at the end is to limit the number of tests to the number specified up top.
     chunks = [test_inputs[x:x+3] for x in range(0, len(test_inputs), 3) if x < num_tests*3]
 
     # warning message in-case the test number is greater than the inputs.

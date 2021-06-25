@@ -32,7 +32,7 @@ def best_assorted_rate(n, item_costs, delivery_costs):
                 max_queue.enqueue(total)
         if max_queue.get_size() >= n:
             list_out = max_queue.n_list(n)
-            my_list = [(i - d_cost, d_cost) for i in list_out]
+            # my_list = [(i - d_cost, d_cost) for i in list_out]
             summation = sum(list_out)
             # lister.append([summation , my_list])
             max_heap.enqueue(summation)  #
@@ -41,7 +41,7 @@ def best_assorted_rate(n, item_costs, delivery_costs):
     # print(lister)
     # print(max_heap.heap_list)
 
-    highest_price = max_heap.peek()
+    # highest_price = max_heap.peek()
     # return ([i[1] for i in lister if i[0] == highest_price][0], highest_price)
     return max_heap.peek()
 
@@ -111,30 +111,9 @@ class MaxHeap:
             self.bubble_down(i)
             i -= 1
 
-    def is_empty(self):
-        """
-        returns True if the heap is empty, else false
-        """
-        return self.heap_list == [None]
-
-    def is_full(self):
-        """
-        returns True if the heap is full, else false
-        """
-        return len(self.heap_list) - 1 == self.capacity
-
-    def get_capacity(self):
-        """
-        this is the maximum number of a entries the heap can hold
-        capacity of heap = original array size - 1
-        """
-        return self.capacity
-
-    def get_size(self):
-        """
-        number of elements in the heap occupying the array
-        """
-        return len(self.heap_list) - 1
+    def swap(self, index, swapped_index):
+        self.heap_list[index] = self.heap_list[swapped_index]
+        return swapped_index
 
     def bubble_down(self, i):
         """
@@ -164,10 +143,6 @@ class MaxHeap:
                     break
             heap[i] = temp
 
-    def swap(self, index, swapped_index):
-        self.heap_list[index] = self.heap_list[swapped_index]
-        return swapped_index
-
     def bubble_up(self, i):
         """
         bubble_up moves the element stored at index i to its proper place in the heap rearranging elements,
@@ -190,6 +165,32 @@ class MaxHeap:
             else:
                 arr.append(self.dequeue())
         return arr
+
+    def get_size(self):
+        """
+        number of elements in the heap occupying the array
+        """
+        return len(self.heap_list) - 1
+
+    def is_empty(self):
+        """
+        returns True if the heap is empty, else false
+        """
+        return self.heap_list == [None]
+
+    def is_full(self):
+        """
+        returns True if the heap is full, else false
+        """
+        return len(self.heap_list) - 1 == self.capacity
+
+    def get_capacity(self):
+        """
+        this is the maximum number of a entries the heap can hold
+        capacity of heap = original array size - 1
+        """
+        return self.capacity
+
 
 # Driver Code
 if __name__ == "__main__":

@@ -119,6 +119,10 @@ class PriorityQueue(object):
                 arr.append(self.delete())
         return arr
 
+def swap(heap_list, index, swapped_index):
+    heap_list[index] = heap_list[swapped_index]
+    return swapped_index
+
 
 # Driver Code
 if __name__ == "__main__":
@@ -166,3 +170,5 @@ if __name__ == "__main__":
 
     print(maxHeap.peek_at_root())
     print([i[1] for i in lister if i[0] == maxHeap.peek_at_root()])
+    lister = [1,2,3,4,5]
+    print(swap(lister, 1, -1))

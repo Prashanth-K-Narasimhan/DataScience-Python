@@ -7,11 +7,16 @@ def best_assorted_rate(assort_num, icosts, dcosts):
     # using zip improves the code readability, nothing more.
     input_values_tuples = list(zip(list(icosts), list(dcosts)))
 
+    num_of_items = len(icosts)
     # print(input_values_tuples)
+
+    item_sort = MaxHeap(num_of_items)
+    item_sort.heapsort(input_values_tuples)
+    print(input_values_tuples)
+    print(list(item_sort.contents()))
 
     # d_costs = sorted(set(dcosts), reverse=True)
     # using heap sort with loops to insert only the unique elements, as opposed to using set.
-    num_of_items = len(icosts)
     d_costs_uniq = MaxHeap(num_of_items)
     for x in dcosts:
         if x not in d_costs_uniq.heap_list:
@@ -22,21 +27,17 @@ def best_assorted_rate(assort_num, icosts, dcosts):
     max_heap = MaxHeap(num_of_items)
 
     for d_cost in d_costs_uniq.contents():
-        max_queue = MaxHeap(num_of_items)
-
-        for i_cost in input_values_tuples:
+        max_items = list()
+        for i_cost in item_sort.contents():
             if i_cost[1] >= d_cost:
                 total = i_cost[0] + d_cost
-                max_queue.enqueue(total)
+                max_items.append(total)
                 # print(f'{i_cost} ==> {total}')
 
-        if max_queue.get_size() >= assort_num:
-            list_out = max_queue.n_list(assort_num)
+        if len(max_items) >= assort_num:
+            list_out = max_items[:assort_num]
             summation = sum(list_out)
-            state = max_heap.enqueue(summation)
-            if not state:
-                raise OutOfCapacityException(test_no, summation, d_cost)
-                # print("failed to insert {summation} into heap {d_cost}.")
+            max_heap.enqueue(summation)
             # additional details
             details.append([summation , [(i - d_cost, d_cost) for i in list_out]])
             # print(f'{my_list} : {sum(list_out)}')
@@ -45,21 +46,6 @@ def best_assorted_rate(assort_num, icosts, dcosts):
     # print(rated_list)
 
     return rated_list
-
-# dummy user defined Exceptions
-class ElementsDontMatchException(Exception):
-    """Raised when the inputs dont match"""
-
-    def __init__(self, test_num, values):
-        self.message = f"Test {test_num}: elements don't match the number specified {values}"
-        super().__init__(self.message)
-
-class OutOfCapacityException(Exception):
-    """Raised when the heap capacity is reached"""
-    def __init__(self, test_num, arg1 , arg2):
-        self.message = f"Test {test_num}: failed to insert {arg1} into heap {arg2}."
-        super().__init__(self.message)
-
 
 
 class MaxHeap:
@@ -127,7 +113,7 @@ class MaxHeap:
         i = len(alist) // 2
         self.heap_list = [None] + alist
         while i > 0:
-            self.bubble_down(i)
+            self.bubble_down_tuple(i)
             i -= 1
 
     def swap(self, index, swapped_index):
@@ -156,6 +142,33 @@ class MaxHeap:
                     is_right = False
                 if max_child > temp:
                     if is_right and max_child == heap[ i * 2 + 1]:  # checks for right child and if the maximum is the right child
+                        i = self.swap(i, i * 2 + 1)  # swaps with left and return index
+                    else:
+                        i = self.swap(i, i * 2)  # swapped and returns the swapped index
+                else:
+                    heap[i] = temp
+                    break
+            heap[i] = temp
+
+    def bubble_down_tuple(self, i):
+        """
+        bubble_down moves the element stored at index i to its proper place in the heap rearranging elements,
+         as it compares and swaps the node with one of its children
+        """
+
+        if not self.is_empty():
+            heap = self.heap_list
+
+            temp = heap[i]
+            while i * 2 <= self.get_size():  # checks if there is a left in the tree
+                if i * 2 + 1 <= self.get_size():  # checks for right child and sets the maximum of the left and right if True
+                    max_child = max([heap[i * 2], heap[i * 2 + 1]], key=lambda x: x[0])
+                    is_right = True
+                else:
+                    max_child = heap[i * 2]
+                    is_right = False
+                if max_child[0] > temp[0]:
+                    if is_right and max_child[0] == heap[ i * 2 + 1][0]:  # checks for right child and if the maximum is the right child
                         i = self.swap(i, i * 2 + 1)  # swaps with left and return index
                     else:
                         i = self.swap(i, i * 2)  # swapped and returns the swapped index
@@ -235,24 +248,20 @@ if __name__ == "__main__":
         print(f"\x1b[2;31m[WARN] The number of tests [{num_tests}] specified was greater than the inputs [{len(chunks)}] present.\x1b[0;0m")
 
     for test in chunks:
+        totalN, assortN = [int(x) for x in test[0].split() if len(test[0].split()) == 2]
+        item_costs = [int(x) for x in test[1].split()]
+        delivery_costs = [int(x) for x in test[2].split()]
+
+        # print(totalN, assortN)
+
         test_no += 1
-        try:
-            totalN, assortN = [int(x) for x in test[0].split() if len(test[0].split()) == 2]
-            item_costs = [int(x) for x in test[1].split()]
-            delivery_costs = [int(x) for x in test[2].split()]
-        except ValueError as ve:
-            print(f'failed at Test Input {test_no} due to invalid data \x1b[2;31m[{ve}]\x1b[0;0m')
-            continue
 
         if (len(item_costs) == len(delivery_costs)  == totalN):
             assorted_max, assorted_list = best_assorted_rate(assortN, item_costs, delivery_costs)
-            '''
-            # output_list.append(f"Test Number {test_no} : {assorted_max} ==> {assorted_list}") # use this for additional details!!
-            # output_list.append(f"{test_no}. {assorted_max}")
-            '''
-            output_list.append(str(assorted_max))
+            # print(f"Test Number {test_no} : {output[0]} ==> {output[1]}")
+            output_list.append(f"Test Number {test_no} : {assorted_max} ==> {assorted_list}")
         else:
-            raise ElementsDontMatchException(test_no, test)
+            raise Exception(f"{test}: elements don't match the number specified")
 
     file = 'outputPS9.txt'
     with open(file, 'w') as out_file:

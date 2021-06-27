@@ -7,11 +7,16 @@ def best_assorted_rate(assort_num, icosts, dcosts):
     # using zip improves the code readability, nothing more.
     input_values_tuples = list(zip(list(icosts), list(dcosts)))
 
+    num_of_items = len(icosts)
     # print(input_values_tuples)
+
+    item_sort = MaxHeap(num_of_items)
+    item_sort.heapsort(icosts)
+    print(icosts)
+    print(list(item_sort.contents()))
 
     # d_costs = sorted(set(dcosts), reverse=True)
     # using heap sort with loops to insert only the unique elements, as opposed to using set.
-    num_of_items = len(icosts)
     d_costs_uniq = MaxHeap(num_of_items)
     for x in dcosts:
         if x not in d_costs_uniq.heap_list:
@@ -33,10 +38,7 @@ def best_assorted_rate(assort_num, icosts, dcosts):
         if max_queue.get_size() >= assort_num:
             list_out = max_queue.n_list(assort_num)
             summation = sum(list_out)
-            state = max_heap.enqueue(summation)
-            if not state:
-                raise OutOfCapacityException(test_no, summation, d_cost)
-                # print("failed to insert {summation} into heap {d_cost}.")
+            max_heap.enqueue(summation)
             # additional details
             details.append([summation , [(i - d_cost, d_cost) for i in list_out]])
             # print(f'{my_list} : {sum(list_out)}')
@@ -45,21 +47,6 @@ def best_assorted_rate(assort_num, icosts, dcosts):
     # print(rated_list)
 
     return rated_list
-
-# dummy user defined Exceptions
-class ElementsDontMatchException(Exception):
-    """Raised when the inputs dont match"""
-
-    def __init__(self, test_num, values):
-        self.message = f"Test {test_num}: elements don't match the number specified {values}"
-        super().__init__(self.message)
-
-class OutOfCapacityException(Exception):
-    """Raised when the heap capacity is reached"""
-    def __init__(self, test_num, arg1 , arg2):
-        self.message = f"Test {test_num}: failed to insert {arg1} into heap {arg2}."
-        super().__init__(self.message)
-
 
 
 class MaxHeap:
@@ -235,24 +222,20 @@ if __name__ == "__main__":
         print(f"\x1b[2;31m[WARN] The number of tests [{num_tests}] specified was greater than the inputs [{len(chunks)}] present.\x1b[0;0m")
 
     for test in chunks:
+        totalN, assortN = [int(x) for x in test[0].split() if len(test[0].split()) == 2]
+        item_costs = [int(x) for x in test[1].split()]
+        delivery_costs = [int(x) for x in test[2].split()]
+
+        # print(totalN, assortN)
+
         test_no += 1
-        try:
-            totalN, assortN = [int(x) for x in test[0].split() if len(test[0].split()) == 2]
-            item_costs = [int(x) for x in test[1].split()]
-            delivery_costs = [int(x) for x in test[2].split()]
-        except ValueError as ve:
-            print(f'failed at Test Input {test_no} due to invalid data \x1b[2;31m[{ve}]\x1b[0;0m')
-            continue
 
         if (len(item_costs) == len(delivery_costs)  == totalN):
             assorted_max, assorted_list = best_assorted_rate(assortN, item_costs, delivery_costs)
-            '''
-            # output_list.append(f"Test Number {test_no} : {assorted_max} ==> {assorted_list}") # use this for additional details!!
-            # output_list.append(f"{test_no}. {assorted_max}")
-            '''
-            output_list.append(str(assorted_max))
+            # print(f"Test Number {test_no} : {output[0]} ==> {output[1]}")
+            output_list.append(f"Test Number {test_no} : {assorted_max} ==> {assorted_list}")
         else:
-            raise ElementsDontMatchException(test_no, test)
+            raise Exception(f"{test}: elements don't match the number specified")
 
     file = 'outputPS9.txt'
     with open(file, 'w') as out_file:
